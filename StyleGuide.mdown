@@ -39,8 +39,7 @@ The only consistently good time to use this is for target-action where you want 
 
 ## Protocols
 - Declare protocols at the top of the source file where the primary type that adopts it will use it... unless it is widely adopted, then put it in a separate source file with the name of the protocol
-- How should we name protocols?
-- isA , canDo, identity, conversion/translations
+
 
 ## Constants
 - How and where should we define constants?
