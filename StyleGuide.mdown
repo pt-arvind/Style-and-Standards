@@ -1,0 +1,218 @@
+# WeddingWire/swift-style-guide
+
+## Types
+- When to use structs vs. classes?
+
+Use structs for all JSON models and view models
+
+- When to prefer reference semantics vs. value semantics
+
+if it's not a model or view model or an enum, make it a class/reference
+
+## Testing
+
+describe("ClassUnderTest") {
+    context("when a situation arises") {
+        //set up the situation
+        context("when a subset of that situation arises (if necessary)") {
+          // further set up the situation (if necessary)
+          it("should behave a certain way") {
+            // verify expectation
+          }
+        }
+      }
+    }
+
+
+## Properties
+- lazy for any property that is initialized with a value?
+
+
+- @objc when good / bad?
+This is kinda case-by-case.
+
+The only consistently good time to use this is for target-action where you want to make the action private. i.e. (@objc private func foo(sender: AnyObject?) { //do shet } )
+
+- omit type when imprinting enables (.color(), .scene()) etc..)
+- omit 'self' whenever possible
+
+## Protocols
+- Declare protocols at the top of the source file where the primary type that adopts it will use it... unless it is widely adopted, then put it in a separate source file with the name of the protocol
+- How should we name protocols?
+- isA , canDo, identity, conversion/translations
+
+## Constants
+- How and where should we define constants?
+
+All JSON fields must be in a constants struct of the format:
+
+struct Module {
+  struct ClassName {
+    struct JSON {
+      struct Keys {
+        static let keyName = "key"
+        .
+        .
+        .
+      }
+
+      struct Values {
+        static let defaultVal = "default" //a default value
+      }
+    }
+  }
+}
+
+example:
+struct RealWeddings {
+  struct Gallery {
+    struct JSON {
+      struct Keys {
+        static let name = "gallery_name"
+        .
+        .
+        .
+      }
+
+      struct Values {
+        static let defaultParam = "default"
+      }
+    }
+  }
+}
+
+For View Constants:
+
+struct ViewClassNameConstants {
+  struct SubviewName {
+    static let xPadding = 45
+  }
+  .
+  .
+  .
+}
+
+## Control Flow
+- preference for early exit (guard)
+
+Any time there is a block-based callback and you need to reference self, use a guard to check weak self.
+
+ex:
+worker.doAsyncService() { [weak self] (response)
+  guard let \_self = self else { fatalError("self is nil, \\(#function)") }  // if you don't need to fatalError and it makes sense, just return
+  //do stuff
+
+}
+
+## Optionals
+- When to prefer optional binding, optional chaining
+use optional binding instead of optional chaining
+
+- When to force unwrap vs. when not to (i.e. to catch programmer error …)
+when the control flow "doesn't make sense" if the variable is nil, use guard/fatalError pattern to enforce
+
+Implicitly unwrapped optionals:
+When to use:
+- model classes that use ObjectMapper for Initialization
+- controllers that use configurators for dependency injection
+
+
+## Access Control
+When should we be using private vs. internal vs. public?
+
+public: use when writing code in added frameworks (i.e. RequestKit)
+private: use when you want to explicitly say something should not be tested or used by the subclass //vague
+internal: the default, it should be used for everything left over
+
+## Initialization
+Lazy Closures for View Initialization should contain:
+- View default configuration
+- UILabel empty string/nil sizing bug handling (the thing that causes UILabels to size improperly if you don't give it an initial value)
+- dependency injection
+- default controls setup
+
+Custom Views
+- custom views should use a view model for layout
+
+Dependency Injection
+- unless there are demonstrable memory issues, ALWAYS inject dependencies in the initializer
+- NEVER call singletons without injecting them in an initializer
+
+
+## Extensions
+
+The general rule of thumb: do NOT create an extension unless explicitly approved by both leads.
+
+The preferred method of doing things is still to have a helper class/decorator etc. before using an extension.
+
+
+- When are they appropriate?
+Never use an extension as a 'mix-in' for specific functionality -- If you ever find yourself using a protocol extension with a 'where' clause, this is a code smell!
+
+Extensions will be evaluated on a case-by-case basis but are generally discouraged.
+
+- should we declare protocol conformance at the point of extension or at the type declaration?
+Whenever possible, declare protocol conformance at the point of type declaration
+
+- How do we document their purpose?
+Extensions should be documented at the point of implementation
+
+- Where do they belong?
+UI Extensions go in UI.swift
+
+
+## View Controller
+- purpose: layout View
+- conforms to delegate/datasource protocols (i.e. tableview delegate/datasource, collectionview delegate/datasource)
+- can contain animation and view-specific code ==== VERIFY
+- contains view Model which is a struct that represents state
+- contains func display(vm: Module.Scene.StateEnum)
+- contains implicitly unwrapped reference to Interactor
+- should pipe through all interactions to the interactor, REGARDLESS of whether the view controller can handle it without any actual modification from interactor and presenter
+- UIViewController type
+
+
+## Interactor
+- purpose: get/assemble models (either from internet or cache)
+- contains perform(req: Module.Scene.RequestEnum)
+- contains implicitly unwrapped reference to the Presenter
+- may employ smaller classes (like workers) to achieve purpose
+- class type
+
+## Presenter
+- purpose: changes model objects into view models and arranges them in a way convenient to lay out. Responsible for view logic
+- contains present(Module.Scene.ResponseEnum)
+- contains implicitly unwrapped reference to the View Controller
+- may employ smaller classes (like decorators) to achieve purpose
+- class type
+
+## Request Enum
+- Module.Scene.RequestEnum
+- do NOT send a ViewModel into this enum, you should only send the specific params that are important to this function
+
+## Response Enum
+- Module.Scene.ResponseEnum
+- contains cases for models being piped through as well as cases for errors
+
+## State Enum
+- Module.Scene.StateEnum
+- will often have a failure case for interactor network issues being piped through
+
+## View Model
+- purpose: view state. may, at times, be very similar to the model itself
+- should NEVER contain any logic (i.e. if statements, for statements, etc.) --> this should live in the presenter
+- struct type
+
+## Parameter Naming 
+-  Prefer method names that read as grammatically correct
+-  Avoid repeating name in method name and as external argument name
+ - Example
+
+ ```swift
+ //Old
+ func addToolBarToView(view: UIView) {}
+
+ //New
+ func addToolBar(to view: UIView){}
+
+ ```
