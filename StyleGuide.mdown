@@ -11,6 +11,7 @@ if it's not a model or view model or an enum, make it a class/reference
 
 ## Testing
 
+```swift
 describe("ClassUnderTest") {
     context("when a situation arises") {
         //set up the situation
@@ -22,7 +23,7 @@ describe("ClassUnderTest") {
         }
       }
     }
-
+```
 
 ## Properties
 - lazy for any property that is initialized with a value?
@@ -46,6 +47,7 @@ The only consistently good time to use this is for target-action where you want 
 
 All JSON fields must be in a constants struct of the format:
 
+```swift
 struct Module {
   struct ClassName {
     struct JSON {
@@ -80,8 +82,11 @@ struct RealWeddings {
     }
   }
 }
+```
 
 For View Constants:
+
+```swift
 
 struct ViewClassNameConstants {
   struct SubviewName {
@@ -91,6 +96,7 @@ struct ViewClassNameConstants {
   .
   .
 }
+```
 
 ## Control Flow
 - preference for early exit (guard)
@@ -98,11 +104,13 @@ struct ViewClassNameConstants {
 Any time there is a block-based callback and you need to reference self, use a guard to check weak self.
 
 ex:
+```swift
 worker.doAsyncService() { [weak self] (response)
   guard let \_self = self else { fatalError("self is nil, \\(#function)") }  // if you don't need to fatalError and it makes sense, just return
   //do stuff
 
 }
+```
 
 ## Optionals
 - When to prefer optional binding, optional chaining
@@ -203,7 +211,7 @@ UI Extensions go in UI.swift
 - should NEVER contain any logic (i.e. if statements, for statements, etc.) --> this should live in the presenter
 - struct type
 
-## Parameter Naming 
+## Parameter Naming
 -  Prefer method names that read as grammatically correct
 -  Avoid repeating name in method name and as external argument name
  - Example
