@@ -105,7 +105,7 @@ Any time there is a block-based callback and you need to reference self, use a g
 ex:
 ```swift
 worker.doAsyncService() { [weak self] (response)
-  guard let \_self = self else { fatalError("self is nil, \\(#function)") }  // if you don't need to fatalError and it makes sense, just return
+  guard let _self = self else { fatalError("self is nil, \(#function)") }  // if you don't need to fatalError and it makes sense, just return
   //do stuff
 
 }
