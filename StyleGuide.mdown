@@ -156,7 +156,7 @@ The preferred method of doing things is still to have a helper class/decorator e
 - When are they appropriate?
 Never use an extension as a 'mix-in' for specific functionality -- If you ever find yourself using a protocol extension with a 'where' clause, this is a code smell!
 
-Extensions may be used to encapsulate code for a given class. For example:
+Extensions may be used to organize code for a given class we own. For example:
 
 ```swift
 extension WWHTMLTextView /* Actions */ {
