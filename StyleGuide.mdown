@@ -148,7 +148,7 @@ Dependency Injection
 
 ## Extensions
 
-The general rule of thumb: do NOT create an extension unless explicitly approved by both leads.
+The general rule of thumb: do NOT create an extension for 3rd party or Apple constructs unless explicitly approved by both leads.
 
 The preferred method of doing things is still to have a helper class/decorator etc. before using an extension.
 
@@ -156,7 +156,34 @@ The preferred method of doing things is still to have a helper class/decorator e
 - When are they appropriate?
 Never use an extension as a 'mix-in' for specific functionality -- If you ever find yourself using a protocol extension with a 'where' clause, this is a code smell!
 
-Extensions will be evaluated on a case-by-case basis but are generally discouraged.
+Extensions may be used to encapsulate code for a given class. For example:
+
+```swift
+extension WWHTMLTextView /* Actions */ {
+    func clickedDetected(string:String, type:DetectedType, range:NSRange) {
+        onClick?(string:string, type:type, range:range)
+    }
+}
+
+extension WWHTMLTextView /* Detection */ {
+  .
+  .
+  .
+}
+
+```
+
+Extensions on Apple/3rd party constructs will be evaluated on a case-by-case basis but are generally discouraged.
+
+ex:
+```swift
+extension String {
+   func myStringRandomizer() {
+      // blah blah blah
+      // doing this will get your PR rejected unless BOTH Wess and Arvind approve your extension
+   }
+}
+```
 
 - should we declare protocol conformance at the point of extension or at the type declaration?
 Whenever possible, declare protocol conformance at the point of type declaration
