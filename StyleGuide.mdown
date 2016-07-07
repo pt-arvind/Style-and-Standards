@@ -156,6 +156,19 @@ The preferred method of doing things is still to have a helper class/decorator e
 - When are they appropriate?
 Never use an extension as a 'mix-in' for specific functionality -- If you ever find yourself using a protocol extension with a 'where' clause, this is a code smell!
 
+If you wish to explicitly declare a protocol that an Apple or 3rd party construct ALREADY CONFORMS TO, then an extension is appropriate:
+
+ex:
+```swift
+protocol Framable {
+  var frame: CGRect {get set}
+}
+
+extension UIView : Framable {} // this is OK because UIView already has a frame!
+
+```
+
+
 Extensions may be used to organize code for a given class we own. For example:
 
 ```swift
