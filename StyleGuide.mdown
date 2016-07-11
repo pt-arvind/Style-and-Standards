@@ -124,12 +124,48 @@ When to use:
 - controllers that use configurators for dependency injection
 
 
+## Equatable
+- Only implement this when you control the object/struct (i.e. view models or screen specific classes)
+- Do NOT use this when dealing with business logic classes. Instead use custom compare functions/types that handle comparison for the specific domain you're in.
+- HINT: a class/struct having ID's should very likely not have Equatable implemented
+
+ex:
+```swift
+struct Vendor {
+  let vendorID: String!
+}
+
+func ==(lhs: Vendor, rhs: Vendor) -> Bool { //Don't do this!
+
+}
+
+//DO this:
+struct StorefrontVendorComparator { // named for the domain of the comparison!
+  func isEqual(lhs: Vendor, rhs: Vendor) -> Bool {
+    return lhs.ID == rhs.ID //or whatever your logic actually is
+  }
+}
+
+```
+
+## Localizations
+- If you use localizations, make sure you use Localizable.stringsdict for pluralizations: https://www.objc.io/issues/9-strings/string-localization/
+- text decoration should be done in code and NOT in the Localizable.strings file.
+
+ex:
+```
+"FORUM_COMMENT_LIKE" = "LIKE" // bad -- decoration is uppercasing the full string
+"FORUM_COMMENT_LIKE" = "like" // good
+
+"FORUM_TOPIC_DETAIL_TITLE" = "Topic Details" //OK
+```
+
 ## Access Control
 When should we be using private vs. internal vs. public?
 
-public: use when writing code in added frameworks (i.e. RequestKit)
-private: use when you want to explicitly say something should not be tested or used by the subclass //vague
-internal: the default, it should be used for everything left over
+- public: use when writing code in added frameworks (i.e. RequestKit)
+- private: use when you want to explicitly say something should not be tested or used by the subclass //vague
+- internal: the default, it should be used for everything left over
 
 ## Initialization
 Lazy Closures for View Initialization should contain:
